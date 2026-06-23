@@ -2,6 +2,6 @@ export const ACCESS_TOKEN_SECRET = 'ACCESS_SECRET';
 
 export const REFRESH_TOKEN_SECRET = 'REFRESH_SECRET';
 
-export const ACCESS_TOKEN_EXPIRES = '1m';
+export const ACCESS_TOKEN_EXPIRES = '15m';
 
 export const REFRESH_TOKEN_EXPIRES = '1d';

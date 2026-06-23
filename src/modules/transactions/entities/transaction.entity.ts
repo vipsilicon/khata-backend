@@ -1,5 +1,3 @@
-import { TransactionType } from 'src/common/enums/transaction-type.enums';
-import { TransactionReference } from 'src/modules/transaction-reference/entities/transaction-reference.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -9,6 +7,12 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+
+// Enums
+import { TransactionType } from 'src/common/enums/transaction-type.enums';
+
+// Entity
+import { TransactionReference } from 'src/modules/transaction-reference/entities/transaction-reference.entity';
 
 @Entity()
 export class Transaction {

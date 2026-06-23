@@ -1,35 +1,48 @@
-import { Controller, Post, Body, UseInterceptors } from '@nestjs/common';
-import { BanksService } from './banks.service';
-import { CreateBankDto } from './dto/create-bank.dto';
-import { ImageFileInterceptor } from 'src/common/interceptors/image-file.interceptor';
+import {
+  Controller,
+  Post,
+  Put,
+  Body,
+  UseGuards,
+  Get,
+  Query,
+  Param,
+} from '@nestjs/common';
 
+// Services
+import { BanksService } from './banks.service';
+
+// DTOs
+import { CreateBankDto } from './dto/create-bank.dto';
+import { PaginationDto } from './dto/pagination.dto';
+import { UpdateBankByIdDto } from './dto/update-bank-by-id.dto';
+import { UpdateBankDto } from './dto/update-bank.dto';
+
+// Guards
+import { AdminAuthGuard } from 'src/common/guards/admin-auth.guard';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 @Controller('banks')
 export class BanksController {
   constructor(private readonly banksService: BanksService) {}
 
   @Post('create')
-  @UseInterceptors(ImageFileInterceptor('icon'))
+  @UseGuards(JwtAuthGuard, AdminAuthGuard)
   create(@Body() createBankDto: CreateBankDto) {
     return this.banksService.create(createBankDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.banksService.findAll();
-  // }
+  @Get('list')
+  @UseGuards(JwtAuthGuard)
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.banksService.findAll(paginationDto);
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.banksService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateBankDto: UpdateBankDto) {
-  //   return this.banksService.update(+id, updateBankDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.banksService.remove(+id);
-  // }
+  @Put(':id')
+  @UseGuards(JwtAuthGuard, AdminAuthGuard)
+  updateById(
+    @Param() params: UpdateBankByIdDto,
+    @Body() updateBankDto: UpdateBankDto,
+  ) {
+    return this.banksService.update(params.id, updateBankDto);
+  }
 }

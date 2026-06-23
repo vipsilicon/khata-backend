@@ -6,8 +6,14 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Request } from 'express';
+
+// Interfaces
 import { IJwtPayload } from '../interfaces/jwt.interface';
+
+// Enums
 import { UserRole } from '../enums/userRole.enums';
+
+// Constants
 import { GUARD_CONST } from '../constants/common.constants';
 
 @Injectable()

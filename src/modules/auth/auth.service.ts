@@ -11,7 +11,6 @@ import { Repository } from 'typeorm';
 
 // DTOs
 import { CreateAuthDto } from './dto/create-auth.dto';
-// import { UpdateAuthDto } from './dto/update-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { CreateAdminDto } from '../admin/dto/create-admin.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -33,11 +32,7 @@ import { UserRole } from 'src/common/enums/userRole.enums';
 
 // Constants
 import { defaultServerResponse } from 'src/common/constants/default.constants';
-import {
-  ADMIN_CONST,
-  JWT_CONST,
-  USER_CONST,
-} from 'src/common/constants/common.constants';
+import { AUTH_CONST } from 'src/common/constants/common.constants';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ActiveDeactivateAccountDto } from './dto/activate-deactivate-account.dto';
 
@@ -62,7 +57,7 @@ export class AuthService {
           createAdminData.email,
         );
         if (emailExists) {
-          throw new ConflictException(ADMIN_CONST.ERROR.EMAIL_ALREADY_EXISTS);
+          throw new ConflictException(AUTH_CONST.ERROR.EMAIL_ALREADY_EXISTS);
         }
       }
 
@@ -71,7 +66,7 @@ export class AuthService {
           createAdminData.mobile,
         );
         if (mobileExists) {
-          throw new ConflictException(ADMIN_CONST.ERROR.MOBILE_ALREADY_EXISTS);
+          throw new ConflictException(AUTH_CONST.ERROR.MOBILE_ALREADY_EXISTS);
         }
       }
 
@@ -98,18 +93,19 @@ export class AuthService {
       };
 
       response.statusCode = HttpStatus.CREATED;
-      response.message = ADMIN_CONST.SUCEESS.ADMIN_CREATED;
+      response.message = AUTH_CONST.SUCCESS.ADMIN_REGISTERED;
       response.body = adminResponse;
     } catch (error: unknown) {
       if (error instanceof HttpException) {
         response.statusCode = error.getStatus();
-        response.message = error.message || 'Login failed';
+        response.message =
+          error.message || AUTH_CONST.ERROR.FAILED_ADMIN_REGISTER;
       } else if (error instanceof Error) {
         response.statusCode = 500;
         response.message = error.message;
       } else {
         response.statusCode = 500;
-        response.message = 'Login failed';
+        response.message = AUTH_CONST.ERROR.FAILED_ADMIN_REGISTER;
       }
     }
 
@@ -126,7 +122,7 @@ export class AuthService {
       const auth = await this.authRepository.findOne({ where: { email } });
 
       if (!auth) {
-        throw new NotFoundException(ADMIN_CONST.ERROR.AUTH_NOT_FOUND);
+        throw new NotFoundException(AUTH_CONST.ERROR.AUTH_NOT_FOUND);
       }
 
       if (auth.email) {
@@ -134,12 +130,12 @@ export class AuthService {
           auth.email,
         );
         if (!emailExists) {
-          throw new NotFoundException(ADMIN_CONST.ERROR.ADMIN_NOT_FOUND);
+          throw new NotFoundException(AUTH_CONST.ERROR.ADMIN_NOT_FOUND);
         }
 
         adminId = await this.adminService.getIdByEmail(auth.email);
         if (!adminId) {
-          throw new NotFoundException(ADMIN_CONST.ERROR.ADMIN_NOT_FOUND);
+          throw new NotFoundException(AUTH_CONST.ERROR.ADMIN_NOT_FOUND);
         }
       }
 
@@ -149,15 +145,17 @@ export class AuthService {
       );
 
       if (!isPasswordValid) {
-        throw new UnauthorizedException(ADMIN_CONST.ERROR.INVALID_CREDENTIALS);
+        throw new UnauthorizedException(
+          AUTH_CONST.ERROR.INVALID_CREDENTIAL_ADMIN,
+        );
       }
 
       if (auth.role !== UserRole.ADMIN) {
-        throw new UnauthorizedException(ADMIN_CONST.ERROR.NOT_ADMIN_USER);
+        throw new UnauthorizedException(AUTH_CONST.ERROR.NOT_ADMIN);
       }
 
       if (!auth.isActive) {
-        throw new UnauthorizedException(ADMIN_CONST.ERROR.INACTIVE_ADMIN);
+        throw new UnauthorizedException(AUTH_CONST.ERROR.INACTIVE_ADMIN);
       }
 
       const payload: IJwtPayload = {
@@ -180,18 +178,18 @@ export class AuthService {
       };
 
       response.statusCode = HttpStatus.OK;
-      response.message = ADMIN_CONST.SUCEESS.ADMIN_LOGGED_IN;
+      response.message = AUTH_CONST.SUCCESS.ADMIN_LOGGED_IN;
       response.body = authResponse;
     } catch (error: unknown) {
       if (error instanceof HttpException) {
         response.statusCode = error.getStatus();
-        response.message = error.message || 'Login failed';
+        response.message = error.message || AUTH_CONST.ERROR.FAILED_ADMIN_LOGIN;
       } else if (error instanceof Error) {
         response.statusCode = 500;
         response.message = error.message;
       } else {
         response.statusCode = 500;
-        response.message = 'Login failed';
+        response.message = AUTH_CONST.ERROR.FAILED_ADMIN_LOGIN;
       }
     }
 
@@ -210,7 +208,7 @@ export class AuthService {
           createUserData.email,
         );
         if (emailExists) {
-          throw new ConflictException(USER_CONST.ERROR.EMAIL_ALREADY_EXISTS);
+          throw new ConflictException(AUTH_CONST.ERROR.EMAIL_ALREADY_EXISTS);
         }
       }
 
@@ -219,7 +217,7 @@ export class AuthService {
           createUserData.mobile,
         );
         if (mobileExists) {
-          throw new ConflictException(USER_CONST.ERROR.MOBILE_ALREADY_EXISTS);
+          throw new ConflictException(AUTH_CONST.ERROR.MOBILE_ALREADY_EXISTS);
         }
       }
 
@@ -244,18 +242,19 @@ export class AuthService {
       };
 
       response.statusCode = HttpStatus.CREATED;
-      response.message = USER_CONST.SUCEESS.USER_CREATED;
+      response.message = AUTH_CONST.SUCCESS.USER_REGISTERED;
       response.body = userResponse;
     } catch (error: unknown) {
       if (error instanceof HttpException) {
         response.statusCode = error.getStatus();
-        response.message = error.message || 'Login failed';
+        response.message =
+          error.message || AUTH_CONST.ERROR.FAILED_USER_REGISTER;
       } else if (error instanceof Error) {
         response.statusCode = 500;
         response.message = error.message;
       } else {
         response.statusCode = 500;
-        response.message = 'Login failed';
+        response.message = AUTH_CONST.ERROR.FAILED_USER_REGISTER;
       }
     }
 
@@ -274,7 +273,7 @@ export class AuthService {
       });
 
       if (!auth) {
-        throw new NotFoundException(USER_CONST.ERROR.AUTH_NOT_FOUND);
+        throw new NotFoundException(AUTH_CONST.ERROR.AUTH_NOT_FOUND);
       }
 
       if (auth.email) {
@@ -282,12 +281,12 @@ export class AuthService {
           auth.email,
         );
         if (!emailExists) {
-          throw new NotFoundException(USER_CONST.ERROR.USER_NOT_FOUND);
+          throw new NotFoundException(AUTH_CONST.ERROR.USER_NOT_FOUND);
         }
 
         userId = await this.usersService.getIdByEmail(auth.email);
         if (!userId) {
-          throw new NotFoundException(USER_CONST.ERROR.USER_NOT_FOUND);
+          throw new NotFoundException(AUTH_CONST.ERROR.USER_NOT_FOUND);
         }
       }
 
@@ -297,15 +296,17 @@ export class AuthService {
       );
 
       if (!isPasswordValid) {
-        throw new UnauthorizedException(USER_CONST.ERROR.INVALID_CREDENTIALS);
+        throw new UnauthorizedException(
+          AUTH_CONST.ERROR.INVALID_CREDENTIAL_USER,
+        );
       }
 
       if (auth.role !== UserRole.USER) {
-        throw new UnauthorizedException(USER_CONST.ERROR.NOT_USER);
+        throw new UnauthorizedException(AUTH_CONST.ERROR.NOT_USER);
       }
 
       if (!auth.isActive) {
-        throw new UnauthorizedException(USER_CONST.ERROR.INACTIVE_USER);
+        throw new UnauthorizedException(AUTH_CONST.ERROR.INACTIVE_USER);
       }
 
       const payload: IJwtPayload = {
@@ -328,18 +329,18 @@ export class AuthService {
       };
 
       response.statusCode = HttpStatus.OK;
-      response.message = USER_CONST.SUCEESS.USER_LOGGED_IN;
+      response.message = AUTH_CONST.SUCCESS.USER_LOGGED_IN;
       response.body = authResponse;
     } catch (error: unknown) {
       if (error instanceof HttpException) {
         response.statusCode = error.getStatus();
-        response.message = error.message || 'Login failed';
+        response.message = error.message || AUTH_CONST.ERROR.FAILED_USER_LOGIN;
       } else if (error instanceof Error) {
         response.statusCode = 500;
         response.message = error.message;
       } else {
         response.statusCode = 500;
-        response.message = 'Login failed';
+        response.message = AUTH_CONST.ERROR.FAILED_USER_LOGIN;
       }
     }
 
@@ -352,7 +353,7 @@ export class AuthService {
 
     try {
       if (!refreshToken) {
-        throw new UnauthorizedException(JWT_CONST.ERROR.REFRESH_TOKEN_MISSING);
+        throw new UnauthorizedException(AUTH_CONST.ERROR.REFRESH_TOKEN_MISSING);
       }
       const decoded: IJwtPayload =
         await JwtUtils.verifyRefreshToken(refreshToken);
@@ -368,7 +369,7 @@ export class AuthService {
       const newRefreshToken = JwtUtils.generateRefreshToken(payload);
 
       response.statusCode = HttpStatus.OK;
-      response.message = JWT_CONST.SUCCESS.TOKEN_VERIFIED;
+      response.message = AUTH_CONST.SUCCESS.TOKEN_VERIFIED;
       response.body = {
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,
@@ -376,13 +377,14 @@ export class AuthService {
     } catch (error) {
       if (error instanceof HttpException) {
         response.statusCode = error.getStatus();
-        response.message = error.message || 'Token refresh failed';
+        response.message =
+          error.message || AUTH_CONST.ERROR.FAILED_REFRESH_TOKEN;
       } else if (error instanceof Error) {
         response.statusCode = 500;
         response.message = error.message;
       } else {
         response.statusCode = 500;
-        response.message = 'Token refresh failed';
+        response.message = AUTH_CONST.ERROR.FAILED_REFRESH_TOKEN;
       }
     }
 
@@ -400,27 +402,28 @@ export class AuthService {
       });
 
       if (!auth) {
-        throw new NotFoundException('Auth not found');
+        throw new NotFoundException(AUTH_CONST.ERROR.AUTH_NOT_FOUND);
       }
 
       if (auth.isActive) {
-        throw new ConflictException('Already active');
+        throw new ConflictException(AUTH_CONST.ERROR.AUTH_ALREADY_ACTIVATED);
       } else {
         await this.authRepository.update({ id: auth.id }, { isActive: true });
         response.statusCode = HttpStatus.OK;
-        response.message = 'Account activated';
+        response.message = AUTH_CONST.SUCCESS.ACCOUNT_ACTIVATED;
         response.body = { id: auth.id };
       }
     } catch (error) {
       if (error instanceof HttpException) {
         response.statusCode = error.getStatus();
-        response.message = error.message || 'Token refresh failed';
+        response.message =
+          error.message || AUTH_CONST.ERROR.FAILED_ACTIVATE_ACCOUNT;
       } else if (error instanceof Error) {
         response.statusCode = 500;
         response.message = error.message;
       } else {
         response.statusCode = 500;
-        response.message = 'Token refresh failed';
+        response.message = AUTH_CONST.ERROR.FAILED_ACTIVATE_ACCOUNT;
       }
     }
 
@@ -438,27 +441,28 @@ export class AuthService {
       });
 
       if (!auth) {
-        throw new NotFoundException('Auth not found');
+        throw new NotFoundException(AUTH_CONST.ERROR.AUTH_NOT_FOUND);
       }
 
       if (!auth.isActive) {
-        throw new ConflictException('Already deactive');
+        throw new ConflictException(AUTH_CONST.ERROR.FAILED_ACTIVATE_ACCOUNT);
       } else {
         await this.authRepository.update({ id: auth.id }, { isActive: false });
         response.statusCode = HttpStatus.OK;
-        response.message = 'Account deactivated';
+        response.message = AUTH_CONST.SUCCESS.ACCOUNT_DEACTIVATED;
         response.body = { id: auth.id };
       }
     } catch (error) {
       if (error instanceof HttpException) {
         response.statusCode = error.getStatus();
-        response.message = error.message || 'Token refresh failed';
+        response.message =
+          error.message || AUTH_CONST.ERROR.FAILED_DEACTIVATE_ACCOUNT;
       } else if (error instanceof Error) {
         response.statusCode = 500;
         response.message = error.message;
       } else {
         response.statusCode = 500;
-        response.message = 'Token refresh failed';
+        response.message = AUTH_CONST.ERROR.FAILED_DEACTIVATE_ACCOUNT;
       }
     }
 

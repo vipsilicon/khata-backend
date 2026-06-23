@@ -1,5 +1,3 @@
-import { InvestmentType } from 'src/common/enums/investmentType.enums';
-import { TransactionReference } from 'src/modules/transaction-reference/entities/transaction-reference.entity';
 import {
   Column,
   CreateDateColumn,
@@ -9,6 +7,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+// Enums
+import { InvestmentType } from 'src/common/enums/investmentType.enums';
+
+// Entity
+import { TransactionReference } from 'src/modules/transaction-reference/entities/transaction-reference.entity';
 
 @Entity()
 export class Investment {

@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+
+// DTOs
 import { CreateInvestmentDto } from './dto/create-investment.dto';
 import { UpdateInvestmentDto } from './dto/update-investment.dto';
 

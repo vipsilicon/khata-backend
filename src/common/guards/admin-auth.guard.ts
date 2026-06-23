@@ -4,8 +4,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
+
+// Interfaces
 import { IJwtPayload } from '../interfaces/jwt.interface';
+
+// Constants
 import { GUARD_CONST } from '../constants/common.constants';
+
+// Enum
 import { UserRole } from '../enums/userRole.enums';
 
 export class AdminAuthGuard implements CanActivate {

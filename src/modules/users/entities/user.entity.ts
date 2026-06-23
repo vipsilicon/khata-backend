@@ -5,8 +5,12 @@ import {
   OneToOne,
   JoinColumn,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
+
+// Entity
 import { Auth } from 'src/modules/auth/entities/auth.entity';
+import { UserBank } from 'src/user-banks/entities/user-bank.entity';
 
 @Entity('user')
 export class User {
@@ -43,6 +47,9 @@ export class User {
     referencedColumnName: 'id',
   })
   auth!: Auth;
+
+  @OneToMany(() => UserBank, (userBank) => userBank.bank)
+  userBanks!: UserBank[];
 
   static createUserData(data: Partial<User>): Partial<User> {
     return {

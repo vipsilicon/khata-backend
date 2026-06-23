@@ -6,3 +6,7 @@ export interface IAuth {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface IAuthPayload {
+  id: number;
+}

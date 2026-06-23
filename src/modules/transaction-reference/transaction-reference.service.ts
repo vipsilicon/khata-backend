@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+
+// DTOs
 import { CreateTransactionReferenceDto } from './dto/create-transaction-reference.dto';
 import { UpdateTransactionReferenceDto } from './dto/update-transaction-reference.dto';
 
@@ -16,7 +18,10 @@ export class TransactionReferenceService {
     return `This action returns a #${id} transactionReference`;
   }
 
-  update(id: number, updateTransactionReferenceDto: UpdateTransactionReferenceDto) {
+  update(
+    id: number,
+    updateTransactionReferenceDto: UpdateTransactionReferenceDto,
+  ) {
     return `This action updates a #${id} transactionReference`;
   }
 

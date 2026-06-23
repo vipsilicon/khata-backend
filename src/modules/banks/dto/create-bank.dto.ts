@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateBankDto {
   @IsString()
@@ -8,4 +8,8 @@ export class CreateBankDto {
   @IsString()
   @IsNotEmpty()
   code!: string;
+
+  @IsOptional()
+  @IsString()
+  iconUrl!: string;
 }

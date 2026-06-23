@@ -6,7 +6,11 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
+
+// Utils
 import { JwtUtils } from '../utils/jwt.utils';
+
+// Constants
 import { JWT_CONST } from '../constants/common.constants';
 
 @Injectable()

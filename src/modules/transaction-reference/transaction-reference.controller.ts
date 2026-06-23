@@ -1,15 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+
+// Services
 import { TransactionReferenceService } from './transaction-reference.service';
+
+// DTOs
 import { CreateTransactionReferenceDto } from './dto/create-transaction-reference.dto';
 import { UpdateTransactionReferenceDto } from './dto/update-transaction-reference.dto';
 
 @Controller('transaction-reference')
 export class TransactionReferenceController {
-  constructor(private readonly transactionReferenceService: TransactionReferenceService) {}
+  constructor(
+    private readonly transactionReferenceService: TransactionReferenceService,
+  ) {}
 
   @Post()
   create(@Body() createTransactionReferenceDto: CreateTransactionReferenceDto) {
-    return this.transactionReferenceService.create(createTransactionReferenceDto);
+    return this.transactionReferenceService.create(
+      createTransactionReferenceDto,
+    );
   }
 
   @Get()
@@ -23,8 +39,14 @@ export class TransactionReferenceController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTransactionReferenceDto: UpdateTransactionReferenceDto) {
-    return this.transactionReferenceService.update(+id, updateTransactionReferenceDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateTransactionReferenceDto: UpdateTransactionReferenceDto,
+  ) {
+    return this.transactionReferenceService.update(
+      +id,
+      updateTransactionReferenceDto,
+    );
   }
 
   @Delete(':id')

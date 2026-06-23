@@ -1,4 +1,3 @@
-import { UserRole } from 'src/common/enums/userRole.enums';
 import {
   Entity,
   Column,
@@ -8,7 +7,14 @@ import {
   UpdateDateColumn,
   OneToOne,
 } from 'typeorm';
+
+// Enums
+import { UserRole } from 'src/common/enums/userRole.enums';
+
+// Utils
 import { PasswordUtils } from 'src/common/utils/passworrd.utils';
+
+// Entity
 import { Admin } from 'src/modules/admin/entities/admin.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 

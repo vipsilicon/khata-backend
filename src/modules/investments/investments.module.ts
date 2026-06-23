@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
+
+// Services
 import { InvestmentsService } from './investments.service';
+
+// Controllers
 import { InvestmentsController } from './investments.controller';
 
 @Module({

@@ -7,6 +7,8 @@ import {
   REFRESH_TOKEN_EXPIRES,
 } from '../constants/auth.constants';
 import { UnauthorizedException } from '@nestjs/common';
+
+// Constants
 import { JWT_CONST } from '../constants/common.constants';
 
 export class JwtUtils {

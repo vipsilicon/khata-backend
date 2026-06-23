@@ -6,6 +6,8 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
+
+// Entity
 import { Auth } from 'src/modules/auth/entities/auth.entity';
 
 @Entity('admin')
