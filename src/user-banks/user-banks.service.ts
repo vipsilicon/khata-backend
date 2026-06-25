@@ -38,13 +38,13 @@ export class UserBanksService {
     private readonly banksService: BanksService,
   ) {}
 
-  async create(createUserBankDto: CreateUserBankDto) {
+  async create(createUserBankDto: CreateUserBankDto, req: Request) {
     const response = { ...defaultServerResponse };
+    const typedReq = req as Request & { auth?: IAuthPayload };
+    const userId = typedReq.auth?.id ?? 0;
 
     try {
-      const isUserExist = await this.userServices.isUserExist(
-        createUserBankDto.userId,
-      );
+      const isUserExist = await this.userServices.isUserExist(userId);
 
       if (!isUserExist) {
         throw new NotFoundException(USER_BANK_CONST.ERROR.USER_NOT_FOUND);
@@ -60,7 +60,7 @@ export class UserBanksService {
 
       const userBankExist = await this.userBankRepository.findOne({
         where: {
-          userId: createUserBankDto.userId,
+          userId,
           bankId: createUserBankDto.bankId,
         },
       });
@@ -71,14 +71,14 @@ export class UserBanksService {
         );
       }
 
-      const userBank = this.userBankRepository.create(createUserBankDto);
+      const userBank = UserBank.createUserBankData(createUserBankDto, userId);
       const createdUserBank = await this.userBankRepository.save(userBank);
 
       const body: IUserBanks = {
         id: createdUserBank.id,
         initialAmount: createdUserBank.intialAmount,
         balance: createdUserBank.balance,
-        userId: createdUserBank.userId,
+        userId,
         bankId: createdUserBank.bankId,
       };
       response.statusCode = HttpStatus.CREATED;

@@ -11,6 +11,7 @@ import { JoinColumn } from 'typeorm';
 // Entity
 import { Bank } from 'src/modules/banks/entities/bank.entity';
 import { User } from 'src/modules/users/entities/user.entity';
+import { CreateUserBankDto } from '../dto/create-user-bank.dto';
 
 @Entity()
 export class UserBank {
@@ -56,4 +57,12 @@ export class UserBank {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  static createUserBankData(data: CreateUserBankDto, userId: number) {
+    return {
+      ...data,
+      userId,
+      balance: data?.initialAmount ?? 0,
+    };
+  }
 }

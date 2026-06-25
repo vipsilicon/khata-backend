@@ -16,8 +16,8 @@ export class UserBanksController {
 
   @Post('create')
   @UseGuards(JwtAuthGuard)
-  create(@Body() createUserBankDto: CreateUserBankDto) {
-    return this.userBanksService.create(createUserBankDto);
+  create(@Body() createUserBankDto: CreateUserBankDto, @Req() req: Request) {
+    return this.userBanksService.create(createUserBankDto, req);
   }
 
   @Get('list')
